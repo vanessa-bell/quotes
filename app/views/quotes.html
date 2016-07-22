@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="/static/css/styles.css" type="text/css">
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<title>Quotes</title>
+</head>
+<body>
+	<nav class="navbar navbar-default">
+  	<div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/quotes">Quotes</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/quotes">Dashboard<span class="sr-only">(current)</span></a></li>
+        <li class="inactive"><a href="/users/{{session['id']}}">Profile<span class="sr-only">(current)</span></a></li>
+          </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/logoff">Logout</a></li>
+          </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div id='wrapper' class='container-fluid'>
+<h2>Welcome, {{session['alias']}}!</h2>
+      <div id='outer' class='container-fluid'>
+      <h5>Quotable Quotes:</h5>
+      <div id='quotable' class='container-fluid'>
+        
+        {% for quote in quotes %}
+        <div id='quote-box' class='container-fluid'>
+        <p><span>{{quote.speaker}}:</span> "{{quote.quote}}"</a></p>
+        <span2>Posted by <a href='/users/{{quote.user_id}}'>{{quote.alias}}</a></span2>
+        <p><form action='/quotes/favorite/{{quote.quote_id}}' method='POST'>
+        <button type='submit' class="btn btn-primary">Add to My Favorites</button>
+        </form></p>
+        </div>
+        {%endfor%}
+      </div>
+      </div>
+      <div id='outer' class='container-fluid'>
+      <h5>Your favorite quotes:</h5>
+      <div id ='quotable'>
+        
+        {%for favorite in favorites%}
+        <div id='quote-box'>
+          <p><span>{{favorite.speaker}}:</span> "{{favorite.quote}}"</p>
+          <p><span2>Posted by <a href='/users/{{favorite.created_id}}'>{{favorite.alias}}</a></span2></p>
+        <form action='/quotes/remove/{{favorite.quote_id}}' method='POST'>
+        <button type='submit' class="btn btn-primary">Remove from My Favorites</button>
+        </form>
+        </div>
+        {%endfor%}
+      </div>
+      </div>
+<form class="form-vertical" action='/quotes/create' method="POST">
+  <h4>Contribute a quote:</h4>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category,message in messages %}
+                <p class="{{ category }}">{{message}}</p>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+  <div class="form-group">
+      <label>Quote from:</label>
+      <input class="form-control" type="text" name="speaker">
+      <label>Quote:</label>
+      <textarea name="quote" class="form-control" cols = "30" rows="4"></textarea>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-4">
+      <button type="submit" class="btn btn-success">Post</button>
+    </div>
+  </div>
+</form>
+</div>
+</body>
+</html>
